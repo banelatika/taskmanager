@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>task</title>
+</head>
+
+<body>
+
+  <form action="" method="POST" novalidate>
+    {% csrf_token %}
+    {% if tasksall.non_field_errors %}
+    {% for error in tasksall.non_field_errors %}
+    {{error}}
+    {% endfor %}
+    {% endif %}
+    {% for form in tasksall %}
+    {{form.label_tag}} {{form}} {{form.errors|striptags}} <br> <br>
+    {% endfor %}
+    <input class="btn btn-success" type="submit" value="submit">
+    <a href=" {% url 'profile'%}">Back</a>
+  </form>
+
+
+</body>
+
+</html>

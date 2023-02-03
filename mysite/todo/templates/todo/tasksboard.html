@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bootstrap demo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+<body>
+  
+    
+        <h1 class="text-center  text-primary ">Show Task Board Information</h1>
+        {% if tasklist %}
+        
+        <table class="table table-hover table-dark text-center">
+          <thead >
+            <tr class="h4 text-info"  >
+              
+              <th scope="col">Task details</th>
+              <th scope="col">Assignee</th>
+              <th scope="col">Assignor</th>
+              <th scope="col">Status</th>
+              <th scope="col">Edit</th>
+              <th scope="col">Delete</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            {% for st in tasklist %}
+            <tr>
+              <td>{{st.taskdetails}}</td>
+              <td>{{st.assignee}}</td>
+              <td>{{st.assignor}}</td>
+              <td>
+                {% if st.checkbox  %}
+                            <p align="center">Completed</p>
+
+                        {% elif not st.checkbox  and request.user.profile.is_admin or st.assignor == request.user %}
+                            <p align="center">Pending</p>
+
+                        {% else %}
+                            <a href="{% url 'taskcompleted' st.id%}">
+                                <button class="btn">completed</button>
+                            </a>
+                        {% endif %}
+              </td>
+              {% if request.user.profile.is_active and request.user.profile.is_admin %}
+                <td> <a 
+                  href="{% url 'editask' st.id %}"
+                  class="btn btn-warning btn-sm"
+                  >Edit</a>
+                </td>
+                <td>
+                  <form action="{% url 'deletedata' st.id %}" method="POST"  class="d-inline">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-danger" value="delete" />
+                  </form>
+                </td>
+              {% else %}
+              <td>-</td>
+              <td>-</td>
+              {% endif %}
+              
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      
+        {% else %}
+        <h4 text-center alert alert-warning>NO Task Today</h4>
+        {% endif %}
+      
+        <a href=" {% url 'profile'%}">Back</a>
+    
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    </body>
+    
+    </html>
